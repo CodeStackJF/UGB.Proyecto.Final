@@ -1,0 +1,24 @@
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>El usuario con rol de Administrador o Usuario puede ver esta página</h1>
+        <h2>Authenticated User</h2>
+        <p>Welcome, @ViewBag.User.first_name @ViewBag.User.last_name!</p>
+        <p>Email: @ViewBag.User.email</p>
+        <p>
+            Roles:
+            <ul>
+                @foreach(var role in ViewBag.User.users_roles)
+                {
+                    <li>@role.role.description</li>
+                }
+            </ul>
+        </p>
+    </div>
+
+    <form method="post" action="/users/uploadpicture" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <input type="file" name="user_picture" accept="image/jpeg" />
+        <button type="submit">Subir Imagen</button>
+    </form>
+</div>
