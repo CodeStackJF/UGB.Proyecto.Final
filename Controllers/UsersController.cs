@@ -89,24 +89,31 @@ namespace UGB.Proyecto.Final.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> uploadpicture([FromForm] IFormFile user_picture)
         {
+            //se valida el tamaño del archivo para ver si es valido
             if(user_picture.Length == 0)
             {
                 throw new HttpRequestException("El archivo no es válido.");
             }
             
+            //el archivo no debe sobrepasar los 2mb
             if(user_picture.Length / 1024 >= 2048)
             {
                 throw new HttpRequestException("El archivo excede los 2mb.");
             }
 
             int userId = User.GetProperty("UserId", typeof(int));
+            //guardamos el nombre del archivo eliminando caracteres especiales y reemplazando los espacios en blanco con guion bajo
             string fileName = userId.ToString() + "_" + StringHelper.RemoveSpecialChars(user_picture.FileName).Replace(' ', '_');
+            //se define el directorio donde se guardara
             string filePath = Path.Combine(webHostEnvironment.ContentRootPath, "uploadedPictures", fileName);
+            //se crea el archivo en blanco y se copia el flujo de bytes a este
             using(FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
             {
                 await user_picture.CopyToAsync(fs);
             }
+            //obtenemos la suma de verificacion del archivo
             string hash = HashHelper.GetSha256Hash(filePath);
+            //actualizamos la fotografia
             await usersRepository.UpdatePicture(userId, fileName, hash);
             return Redirect("/users/showauthenticated");
         }

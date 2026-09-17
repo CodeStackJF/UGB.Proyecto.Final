@@ -65,7 +65,8 @@ namespace UGB.Proyecto.Final.Helper
                 return hashedBytes;
             }
         }
-
+    
+        //funcion para obtener el hash de un archivo, este debe estar guardado fisicamente.
         public static string GetSha256Hash(string filePath)
         {
             // Abre el archivo de imagen de forma eficiente
